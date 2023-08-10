@@ -35,7 +35,6 @@ namespace TestKot
                     // получаем подключение в виде TcpClient
                     var client = await socket.AcceptAsync();
                     // создаем новую задачу для обслуживания нового клиента
-                    LogsCreator("Адрес подключенного клиента:" + client.RemoteEndPoint);
                     Task.Run(async () => await ProcessClientAsync(client));
 
                     // вместо задач можно использовать стандартный Thread
@@ -71,12 +70,14 @@ namespace TestKot
                 {
                     dataToClient.Append(data + "|");
                 }
+                LogsCreatorAsync("Отправляю тесты");
                 dataToClient.Append("[tests]");
                 return dataToClient.ToString();
             }
             if (response.Contains("[q]"))
             {
                 dataToClient.Append(response.Replace("[q]", "") + "|");
+                
                 string testId = MysqlReader("SELECT * FROM Tests WHERE testName ='" + response.Replace("[q]","") + "'", 0)[0];
                 dataToClient.Append(testId + "|");
                 foreach (var data in MysqlReader("SELECT * FROM Questions WHERE testName ='" + testId + "'", 2))
@@ -89,6 +90,7 @@ namespace TestKot
             if (response.Contains("[qt]"))
             {
                 string[] questionToSend = response.Replace("[qt]","").Split('|');// [0] - id теста, [1] - переданный вопрос
+                LogsCreatorAsync("Получил вопрос " + questionToSend[1]);
                 string questionId = MysqlReader("SELECT * FROM Questions WHERE testName ='" + questionToSend[0] + "' AND question = '" + questionToSend[1] +"'", 1)[0];// получаем id вопроса
                 string questionType = MysqlReader("SELECT * FROM Questions WHERE testName ='" + questionToSend[0] + "' AND question = '" + questionToSend[1] + "'", 3)[0]; //получаем тип вопроса
                 //получаем список правильных ответов
@@ -108,11 +110,13 @@ namespace TestKot
                     dataToClient.Append(answerAll + "|");
                 }
                 dataToClient.Append("[qt]");
+                LogsCreatorAsync("Отправляю " + dataToClient.ToString());
                 return dataToClient.ToString();
             }
             if (response.Contains("[end]"))
             {
                 string[] result = response.Replace("[end]", "").Split('|');// имя, тест, резултат
+                LogsCreatorAsync(result[0] + " сдал тест " + result[1] + " на " + result[2] + "%.");
                 MysqlReader("INSERT INTO UserResult(userName, test, result) VALUES('" + result[0] + "','" + result[1] + "','" + result[2] + "')", 0);
                 UserOut();//шото неделает обновление сам надобо кнопку обновить нажать
             }
