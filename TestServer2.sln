@@ -5,11 +5,6 @@ VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServer2", "TestServer2\TestServer2.csproj", "{41FC158A-2AD6-4F88-91E4-1791F644319F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{2F121AD6-E880-46AD-A31F-CD450E91809B}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\TestKot\MainWindow.xaml = ..\..\TestKot\MainWindow.xaml
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
