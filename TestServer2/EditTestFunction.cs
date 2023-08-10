@@ -13,7 +13,7 @@ namespace TestKot
     {
         public void addTest_Click(Object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(addTestNameBox.Text.ToString()) && MysqlReader("SELECT * FROM Tests WHERE testName = '" + addTestNameBox.Text.ToString() + "'", 1).Count == 0)
+            if (string.IsNullOrEmpty(addTestNameBox.Text.ToString()) || MysqlReader("SELECT * FROM Tests WHERE testName = '" + addTestNameBox.Text.ToString() + "'", 1).Count == 0)
             {
                     //добавляем новый тест
                     MysqlReader("INSERT INTO Tests(testName) VALUES('" + addTestNameBox.Text + "')", 0);
