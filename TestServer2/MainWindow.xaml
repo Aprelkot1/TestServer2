@@ -29,7 +29,6 @@
                                         <ComboBoxItem IsSelected="true">Один вариант</ComboBoxItem>
                                         <ComboBoxItem>Несколько вариантов</ComboBoxItem>
                                         <ComboBoxItem>Последовательность</ComboBoxItem>
-                                        <ComboBoxItem>Картинки</ComboBoxItem>
                                     </ComboBox>
                                     <Button Content="Сохранить изменения" Tag="{Binding Path=testId}" Width="130" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="370,-45,0,0" Click="updateQuestion_Click"></Button>
                                     <ListBox x:Name="questions" Tag="{Binding Path=testId}" ItemsSource="{Binding Path=questionList}"  Width="500" Height="150" VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="5,-20,0,0" SelectionChanged="questionChanged_Click" />
@@ -46,20 +45,17 @@
                                         <ComboBoxItem IsSelected="true">Один вариант</ComboBoxItem>
                                         <ComboBoxItem>Несколько вариантов</ComboBoxItem>
                                         <ComboBoxItem>Последовательность</ComboBoxItem>
-                                        <ComboBoxItem>Картинки</ComboBoxItem>
                                     </ComboBox>
                                     <Button Content="Добавить вопрос" Tag="{Binding Path=testId}"  Width="130" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="370,-20,0,0" Click="addQuestion_Click"></Button>
                                     <ListBox x:Name="answers" Width="280" Height="202" VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="520,-245,0,0" SelectionChanged="answerChanged_Click" />
                                     <TextBlock Margin="525,-40,0,0" FontSize="11" FontWeight="Bold">Добавить новый ответ</TextBlock>
                                     <TextBox x:Name="addAnswerBox" Width="130" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="520,-20,0,0"></TextBox>
-                                    <ComboBox x:Name="editAnswerCombo" Width="70" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="655,-270,0,0">
-                                        <ComboBoxItem IsSelected="true">Верный</ComboBoxItem>
-                                        <ComboBoxItem>Неверный</ComboBoxItem>
+                                    <ComboBox x:Name="editAnswerCombo" ItemsSource="{Binding ElementName=addAnswerCombo, Path=Items}" Width="70" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="655,-270,0,0">
+                                     
                                     </ComboBox>
                                     <Button x:Name="editAnswerButton" Content="Сохранить" Width="70" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="730,-270,0,0" Click="editAnswer_Click"></Button>
                                     <ComboBox x:Name="addAnswerCombo" Width="70" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="655,-20,0,0">
-                                        <ComboBoxItem IsSelected="true">Верный</ComboBoxItem>
-                                        <ComboBoxItem>Неверный</ComboBoxItem>
+                                    
                                     </ComboBox>
                                     <Button x:Name="addAnswerButton" Content="Добавить" Width="70" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="730,-20,0,0" Click="addAnswer_Click"></Button>
                                     <Button Name="removeAnswerButton" Content="Удалить ответ"  Background="PaleVioletRed" Foreground="White" Width="110" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="830,-220,0,5" Click="removeAnswer_Click"></Button>

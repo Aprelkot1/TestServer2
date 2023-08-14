@@ -39,9 +39,9 @@ namespace TestKot
             }
             if (!string.IsNullOrEmpty(answer.ToString()) && tag.Tag != null && MysqlReader("SELECT * FROM Answers WHERE answer = '" + answer.ToString() + "' AND question = " + tag.Tag.ToString(), 1).Count == 0)
             {
-                //добавляем новый вопрос
+                //добавляем новый ответ
                 MysqlReader("INSERT INTO Answers(question,answer,isRight) VALUES('" + tag.Tag + "','" + answer.ToString() + "','" + answerIsRight.ToString() + "')", 0);
-                answerList.Add(answer.ToString());
+                answerList.Add(answer.ToString() + " |"+ answerIsRight.ToString());
             }
             else
             {
@@ -52,7 +52,7 @@ namespace TestKot
         public void removeAnswer_Click(object sender, EventArgs e)
         {
             System.Windows.Controls.Button tag = sender as System.Windows.Controls.Button;
-            //удаляем вопрос
+            //удаляем ответ
             StringBuilder questionId = new StringBuilder();
             var result = MessageBox.Show("Вы точно хотите удалить ответ?", "Аккуратно!", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
@@ -77,8 +77,7 @@ namespace TestKot
                         {
                             if (childType2.SelectedItem != null)
                             {
-                                MessageBox.Show("DELETE FROM Answers WHERE question = '" + questionId + "' AND answer = '" + childType2.SelectedItem + "'");
-                                MysqlReader("DELETE FROM Answers WHERE question = '" + questionId + "' AND answer = '" + childType2.SelectedItem + "'", 0);
+                                MysqlReader("DELETE FROM Answers WHERE question = '" + questionId + "' AND answer = '" + childType2.SelectedItem.ToString().Split('|')[0].Trim() + "'", 0);
                                 answerList.Remove(childType2.SelectedItem.ToString());
                             }
                         }
@@ -104,12 +103,12 @@ namespace TestKot
                     {
 
                         answer.Append(childType.Text);
+                        childType.Clear();
                     }
                     if (childType.Name == "oldAnswerBox")
                     {
-                        answerOldValue.Append(childType.Text);
+                        answerOldValue.Append(childType.Text.Split('|')[0].Trim());
                     }
-
                 }
                 System.Windows.Controls.ComboBox childType2 = child as System.Windows.Controls.ComboBox;
                 if (childType2 != null)
@@ -131,22 +130,27 @@ namespace TestKot
             
             if (!string.IsNullOrEmpty(answer.ToString()) && tag.Tag != null)
             {
-               if (!answerIsRight.ToString().Equals(MysqlReader("SELECT * FROM Answers WHERE answer = '" + answer.ToString() + "' AND question = " + tag.Tag.ToString(), 2)))
-              {
-                  MysqlReader("UPDATE Answers SET isRight ='" + answerIsRight.ToString() + "' WHERE question = " + tag.Tag.ToString() + " AND answer = '" + answerOldValue.ToString() + "'", 0);
-               }
-               if (MysqlReader("SELECT * FROM Answers WHERE answer = '" + answer.ToString() + "' AND question = " + tag.Tag.ToString(), 1).Count == 0)
+                answerList.Clear();
+                if (!answerIsRight.ToString().Equals(MysqlReader("SELECT * FROM Answers WHERE answer = '" + answer.ToString() + "' AND question = " + tag.Tag.ToString(), 2)))
                 {
-                    MysqlReader("UPDATE Answers SET answer = '" + answer.ToString() + "',isRight ='" + answerIsRight.ToString() + "' WHERE question = " + tag.Tag.ToString() + " AND answer = '" + answerOldValue.ToString() + "'", 0);
-                    answerList.Remove(answerOldValue.ToString());
-                    answerList.Add(answer.ToString());
-               }
 
+                    MysqlReader("UPDATE Answers SET isRight ='" + answerIsRight.ToString() + "' WHERE question = " + tag.Tag.ToString() + " AND answer = '" + answerOldValue.ToString() + "'", 0);
+
+                    if (MysqlReader("SELECT * FROM Answers WHERE answer = '" + answer.ToString() + "' AND question = " + tag.Tag.ToString(), 1).Count == 0)
+                    {
+                        MysqlReader("UPDATE Answers SET answer = '" + answer.ToString() + "',isRight ='" + answerIsRight.ToString() + "' WHERE question = " + tag.Tag.ToString() + " AND answer = '" + answerOldValue.ToString() + "'", 0);
+                    }
+                }
+                for (int u = 0; u < MysqlReader("SELECT * FROM Answers WHERE question = '" + tag.Tag.ToString() + "'", 1).Count; u++)
+                {
+                    answerList.Add(MysqlReader("SELECT * FROM Answers WHERE question = '" + tag.Tag.ToString() + "'", 1)[u] + " |" + (MysqlReader("SELECT * FROM Answers WHERE question = '" + tag.Tag.ToString() + "'", 2)[u]));
+                }
             }
             else 
-                {
+            {
                 MessageBox.Show("Ответ не может быть пустым или сначала выберите вопрос и редактируемый ответ! Возможно такой ответ в этом вопросе уже есть.");
-                }
+            }
+          
         }
         public void answerChanged_Click(Object sender, EventArgs e)
         {
@@ -164,7 +168,7 @@ namespace TestKot
                     if (childType.Name == "editAnswerBox" && tag.SelectedItem != null)
                     {
 
-                        childType.Text = tag.SelectedItem.ToString();
+                        childType.Text = tag.SelectedItem.ToString().Split('|')[0].Trim();
                     }
                 }
                 
@@ -173,7 +177,7 @@ namespace TestKot
                 {
                     if (childType2.Name == "editAnswerCombo" && tag.SelectedItem != null)
                     {
-                        childType2.Text = MysqlReader("SELECT * FROM Answers WHERE question = '" + questionId.ToString() + "' AND answer = '" + tag.SelectedItem + "'", 2)[0];
+                        childType2.Text = MysqlReader("SELECT * FROM Answers WHERE question = '" + questionId.ToString() + "' AND answer = '" + tag.SelectedItem.ToString().Split('|')[0].Trim() + "'", 2)[0];
                     }
                 }
                 

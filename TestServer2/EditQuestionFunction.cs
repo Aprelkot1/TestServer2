@@ -167,17 +167,36 @@ namespace TestKot
                 {
                     if (childType4.Name == "answers" && tag.SelectedItem != null)
                     {
+                        answerList.Clear();
                         childType4.Tag = MysqlReader("SELECT * FROM Questions WHERE testName = '" + tag.Tag + "' AND question = '" + tag.SelectedItem + "'", 1)[0];
-                        answerList = new System.Collections.ObjectModel.ObservableCollection<string>(MysqlReader("SELECT * FROM Answers WHERE question = '" + childType4.Tag + "'", 1));
+                        for (int u = 0; u < MysqlReader("SELECT * FROM Answers WHERE question = '" + childType4.Tag + "'", 1).Count; u++) {
+                            answerList.Add(MysqlReader("SELECT * FROM Answers WHERE question = '" + childType4.Tag + "'", 1)[u]+ " |" + (MysqlReader("SELECT * FROM Answers WHERE question = '" + childType4.Tag + "'", 2)[u]));
+                        }
                         childType4.ItemsSource = answerList;
                     }
                 }
-                System.Windows.Controls.Button childType5 = child as System.Windows.Controls.Button;
+                System.Windows.Controls.ComboBox childType5 = child as System.Windows.Controls.ComboBox;
                 if (childType5 != null)
                 {
-                    if (childType5.Name == "editAnswerCombo" && tag.SelectedItem != null)
+                    if (childType5.Name == "addAnswerCombo" && tag.SelectedItem != null)
                     {
-                        childType5.Tag = MysqlReader("SELECT * FROM Answers WHERE question = '" + tag.Tag + "' AND answer = '" + tag.SelectedItem + "'", 2)[0];
+                        childType5.Items.Clear();
+                        if (MysqlReader("SELECT * FROM Questions WHERE testName = '" + tag.Tag + "' AND question = '" + tag.SelectedItem + "'", 3)[0].Contains("вариант"))
+                        {
+                            childType5.Items.Add("Верный");
+                            childType5.Items.Add("Неверный");
+                            childType5.SelectedIndex = 0;
+                        }
+                        if (MysqlReader("SELECT * FROM Questions WHERE testName = '" + tag.Tag + "' AND question = '" + tag.SelectedItem + "'", 3)[0].Contains("Последовательность"))
+                        {
+                            childType5.Items.Add("1");
+                            for (int count = 1; count <= answerList.Count; count++)
+                            {
+                                childType5.Items.Add(count+1);
+                                childType5.SelectedIndex = 0;
+                            }
+                        }
+
                     }
                 }
                 System.Windows.Controls.TextBox childType6 = child as System.Windows.Controls.TextBox;
