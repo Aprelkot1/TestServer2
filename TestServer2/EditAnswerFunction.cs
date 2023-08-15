@@ -34,6 +34,12 @@ namespace TestKot
                     if (childType2.Name == "addAnswerCombo")
                     {
                         answerIsRight.Append(childType2.Text);
+                        if (childType2.Items.Contains("1"))
+                        {
+                                childType2.Items.Add(childType2.Items.Count + 1);
+                                childType2.SelectedIndex = 0;
+                           
+                        }
                     }
                 }
             }
@@ -79,6 +85,19 @@ namespace TestKot
                             {
                                 MysqlReader("DELETE FROM Answers WHERE question = '" + questionId + "' AND answer = '" + childType2.SelectedItem.ToString().Split('|')[0].Trim() + "'", 0);
                                 answerList.Remove(childType2.SelectedItem.ToString());
+                            }
+                        }
+                    }
+                    System.Windows.Controls.ComboBox childType3 = child as System.Windows.Controls.ComboBox;
+                    if (childType3 != null)
+                    {
+                        if (childType3.Name == "addAnswerCombo")
+                        {
+                            if (childType3.Items.Contains("1"))
+                            {
+                                childType3.Items.Remove(childType3.Items.Count);
+                                childType3.SelectedIndex = 0;
+
                             }
                         }
                     }

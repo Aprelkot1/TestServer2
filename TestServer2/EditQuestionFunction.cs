@@ -198,6 +198,7 @@ namespace TestKot
                         }
 
                     }
+                  
                 }
                 System.Windows.Controls.TextBox childType6 = child as System.Windows.Controls.TextBox;
                 if (childType6 != null)
