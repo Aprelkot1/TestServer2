@@ -90,6 +90,14 @@ namespace TestKot
             {
                 //изменяем новый вопрос
                 MysqlReader("UPDATE Questions SET question = '" + question.ToString() + "',type ='" + questionType.ToString() + "' WHERE testname = " + tag.Tag.ToString() + " AND question = '" + questionOldValue.ToString() + "'", 0);
+                MessageBox.Show(question.ToString());
+                testsList.Clear();
+                TestOut();
+            }
+            else if (!string.IsNullOrEmpty(question.ToString()) && MysqlReader("SELECT * FROM Questions WHERE question = '" + question.ToString() + "' AND testname = " + tag.Tag.ToString(), 1).Count == 1)
+            {
+                //изменяем новый вопрос
+                MysqlReader("UPDATE Questions SET question = '" + question.ToString() + "',type ='" + questionType.ToString() + "' WHERE testname = " + tag.Tag.ToString() + " AND question = '" + questionOldValue.ToString() + "'", 0);
                 testsList.Clear();
                 TestOut();
             }

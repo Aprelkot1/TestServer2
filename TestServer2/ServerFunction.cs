@@ -63,7 +63,7 @@ namespace TestKot
         public string ReturnData(string response)
         {
             StringBuilder dataToClient = new StringBuilder();
-            if (response.Contains("[tests]"))
+            if (response.Contains("[tests]"))//отправляем список тестов
             {
                 LogsCreatorAsync(response.Replace("[tests]", ""));
                 foreach(var data in MysqlReader("SELECT * FROM Tests", 1))
@@ -94,16 +94,35 @@ namespace TestKot
                 string questionId = MysqlReader("SELECT * FROM Questions WHERE testName ='" + questionToSend[0] + "' AND question = '" + questionToSend[1] +"'", 1)[0];// получаем id вопроса
                 string questionType = MysqlReader("SELECT * FROM Questions WHERE testName ='" + questionToSend[0] + "' AND question = '" + questionToSend[1] + "'", 3)[0]; //получаем тип вопроса
                 //получаем список правильных ответов
-                List<string> rightAnswers = MysqlReader("SELECT * FROM Answers WHERE question ='" + questionId + "' AND isRight = 'Верный'", 1);
-                List<string> allAnswers = MysqlReader("SELECT * FROM Answers WHERE question ='" + questionId + "'", 1);
-                //возвращаем вопрос,количество правильных ответов, правильные ответы, все ответы
-                //соединяем вопрос, его тип и количество правильных ответов с разделителями
-                dataToClient.Append(questionToSend[1] + "|" + rightAnswers.Count + "|" + questionType + "|");
-                //добавляем правильные ответы
-                foreach (var answerR in rightAnswers)
+                if (questionType.Contains("вариант"))
                 {
-                    dataToClient.Append(answerR + "|");
+                   
+                    List<string> rightAnswers = MysqlReader("SELECT * FROM Answers WHERE question ='" + questionId + "' AND isRight = 'Верный'", 1);
+                    //соединяем вопрос, его тип и количество правильных ответов с разделителями
+                    dataToClient.Append(questionToSend[1] + "|" + rightAnswers.Count + "|" + questionType + "|");
+                    //добавляем правильные ответы
+                    foreach (var answerR in rightAnswers)
+                    {
+                        dataToClient.Append(answerR + "|");
+                    }
                 }
+                if (questionType.Contains("Последовательность"))
+                {
+
+                    List<string> rightAnswers = MysqlReader("SELECT * FROM Answers WHERE question ='" + questionId + "'", 1);
+                    //соединяем вопрос, его тип и количество правильных ответов с разделителями
+                    dataToClient.Append(questionToSend[1] + "|" + "1" + "|" + questionType + "|");
+                    //добавляем правильные ответы
+                    foreach (var answerR in rightAnswers)
+                    {
+                        dataToClient.Append(answerR);
+                    }
+                    dataToClient.Append("|");
+                }
+                List<string> allAnswers = MysqlReader("SELECT * FROM Answers WHERE question ='" + questionId + "'", 1);
+                var rnd = new Random();
+                allAnswers = allAnswers.OrderBy(item => rnd.Next()).ToList();
+
                 //добавляем все ответы
                 foreach (var answerAll in allAnswers)
                 {
